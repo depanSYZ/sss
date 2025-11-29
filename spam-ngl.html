@@ -3,877 +3,437 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NGL Spam Tool - X-Moon Light</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <title>Server Maintenance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --bg:#000000; --card:#1a1a1a;
-            --text:#ffffff; --muted:#888888;
-            --primary:#ff0000; --secondary:#AD4AE7;
-            --accent:#666666;
-        }
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.1),transparent 30%),
-                       radial-gradient(circle at 80% 10%,rgba(255,255,255,.08),transparent 25%),
-                       radial-gradient(circle at 50% 90%,rgba(255,255,255,.05),transparent 30%),
-                       var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        /* Menu Toggle Button */
-        .menu-toggle {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: var(--text);
-            width: 45px;
-            height: 45px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 1001;
-            backdrop-filter: blur(12px);
-            transition: all 0.3s ease;
-        }
-        
-        .menu-toggle:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: scale(1.05);
-        }
-        
-        .menu-toggle i {
-            font-size: 20px;
-        }
-
-        /* Sidebar */
-        .sidebar{
-            width: 270px;
-            background: rgba(26,26,26,0.95);
-            backdrop-filter: blur(12px);
-            border-right: 1px solid rgba(255,255,255,0.15);
-            padding: 25px 20px;
-            position: fixed;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
             height: 100vh;
-            overflow-y: auto;
-            z-index: 1000;
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-        }
-        
-        .sidebar.active {
-            transform: translateX(0);
-        }
-        
-        /* Overlay ketika sidebar aktif */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 999;
-            display: none;
-            backdrop-filter: blur(3px);
-        }
-        
-        .sidebar-overlay.active {
-            display: block;
-        }
-
-        /* Sidebar Header */
-        .sidebar-header {
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+            animation: gradient 15s ease infinite;
+        }
+        
+        .maintenance-container {
             text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            max-width: 700px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .maintenance-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0) 50%
+            );
+            transform: rotate(30deg);
+            animation: shine 8s infinite linear;
+        }
+        
+        .icon-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .icon {
+            font-size: 100px;
             margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+            color: #ffcc00;
+            text-shadow: 0 0 20px rgba(255, 204, 0, 0.7);
         }
-
-        .logo-container {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-ring {
+        
+        .gear {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(
-                #ffffff 0%, 
-                #ff0000 30%, 
-                #AD4AE7 60%, 
-                #ffffff 100%
-            );
-            animation: rotate 3s linear infinite;
-            padding: 4px;
-        }
-
-        .logo {
-            width: 92px;
-            height: 92px;
-            border-radius: 50%;
-            object-fit: cover;
-            display: block;
-            z-index: 1;
-            position: relative;
-            background: #1a1a1a;
-            border: 2px solid rgba(255,255,255,0.1);
-            background-image: url('https://i.top4top.io/p_3590b6bk90.jpg');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .logo.failed::after {
-            content: "IC";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary);
-            background: #1a1a1a;
-            border-radius: 50%;
-            opacity: 1;
-        }
-
-        @keyframes rotate {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+            font-size: 40px;
+            color: rgba(255, 255, 255, 0.7);
+            animation: spin 10s linear infinite;
         }
         
-        .app-title {
-            font-family:'Orbitron',sans-serif;
-            font-size: 22px;
-            font-weight:800;
-            color:#fff;
-            text-align:center;
-            text-shadow:0 0 12px rgba(255,255,255,0.5);
-            margin-bottom: 8px;
+        .gear-1 {
+            top: 10px;
+            left: 50px;
+            animation-direction: reverse;
         }
         
-        .access-info{
-            font-size: 12px;
-            text-align:center;
-            color:#fff;
-            background:rgba(255,255,255,0.1);
-            padding: 8px 14px;
-            border-radius:10px;
-            margin-top: 5px;
-            position: relative;
-            z-index: 1;
-            border: 1px solid rgba(255,255,255,0.1);
+        .gear-2 {
+            bottom: 10px;
+            right: 50px;
         }
         
-        .access-info::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, 
-                #ffffff 0%, 
-                #ff0000 30%, 
-                #AD4AE7 60%, 
-                #ffffff 100%);
-            border-radius: 12px;
-            z-index: -1;
-            animation: borderGlow 3s linear infinite;
-            background-size: 400% 400%;
+        h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            color: #ffcc00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+            animation: textGlow 2s ease-in-out infinite alternate;
         }
         
-        @keyframes borderGlow {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-        
-        .nav-menu{
-            list-style:none;
-            margin-top:25px;
-        }
-        
-        .nav-item {
-            margin-bottom: 8px;
-        }
-        
-        .nav-link{
-            display:flex;
-            align-items:center;
-            gap:12px;
-            padding:14px 16px;
-            color:var(--text);
-            text-decoration:none;
-            border-radius:12px;
-            font-size:14px;
-            transition:.3s;
-            font-weight:500;
-        }
-        
-        .nav-link:hover,
-        .nav-link.active{
-            background:linear-gradient(90deg,rgba(255,255,255,0.15),rgba(255,255,255,0.08));
-            border-left:4px solid var(--secondary);
-            transform:translateX(5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-
-        /* Main Content */
-        .main-content{
-            flex:1;
-            padding: 20px 35px 35px;
-            transition: margin-left 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-        }
-        
-        /* Header */
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        p {
+            font-size: 18px;
+            line-height: 1.6;
             margin-bottom: 30px;
+            opacity: 0.9;
         }
         
-        .main-logo-container {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .main-logo-ring {
-            position: absolute;
+        .progress-container {
             width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(
-                #ffffff 0%, 
-                #ff0000 30%, 
-                #AD4AE7 60%, 
-                #ffffff 100%
-            );
-            animation: rotate 3s linear infinite;
-            padding: 4px;
-        }
-        
-        .main-logo {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            object-fit: cover;
-            display: block;
-            z-index: 1;
-            position: relative;
-            background: #1a1a1a;
-            border: 2px solid rgba(255,255,255,0.1);
-            background-image: url('https://i.top4top.io/p_3590b6bk90.jpg');
-            background-size: cover;
-            background-position: center;
-        }
-        
-        .main-app-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 28px;
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 0 0 12px rgba(255,255,255,0.5);
-        }
-        
-        .main-access-info {
-            font-size: 12px;
-            text-align: center;
-            color: #fff;
-            background: rgba(255,255,255,0.1);
-            padding: 8px 14px;
-            border-radius: 10px;
-            margin-top: 5px;
-            position: relative;
-            z-index: 1;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .main-access-info::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, 
-                #ffffff 0%, 
-                #ff0000 30%, 
-                #AD4AE7 60%, 
-                #ffffff 100%);
-            border-radius: 12px;
-            z-index: -1;
-            animation: borderGlow 3s linear infinite;
-            background-size: 400% 400%;
-        }
-        
-        /* Container untuk form NGL */
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 18px;
-            padding: 30px;
-            position: relative;
-            overflow: hidden;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
             margin-bottom: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 18px 18px 0 0;
-        }
-        
-        .header-section {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-        }
-        
-        .header-section h2 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 28px;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(255,255,255,0.3);
-        }
-        
-        .header-section p {
-            color: #888;
-            font-size: 14px;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 10px;
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        input, textarea {
-            width: 100%;
-            padding: 14px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 15px rgba(173, 74, 231, 0.4);
-            background: rgba(255, 255, 255, 0.12);
-        }
-        
-        /* Action Button */
-        .action-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 16px 25px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 100%;
-            position: relative;
             overflow: hidden;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .action-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.6s;
-        }
-        
-        .action-btn:hover::before {
-            left: 100%;
-        }
-        
-        .action-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(255,255,255,0.15),
-                        0 0 30px rgba(255,255,255,0.1),
-                        inset 0 0 0 1px rgba(255,255,255,0.2);
-        }
-        
-        .action-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .action-btn:active {
-            transform: scale(0.98);
-        }
-        
-        .logs {
-            background: rgba(0,0,0,0.7);
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 25px;
-            max-height: 400px;
-            overflow-y: auto;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            border: 1px solid rgba(255,255,255,0.1);
             position: relative;
-        }
-        
-        .logs::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 12px 12px 0 0;
-        }
-        
-        .log-success { color: #00ff00; }
-        .log-error { color: #ff4444; }
-        .log-info { color: #ffffff; }
-        .log-warning { color: #FF9800; }
-        
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stats::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--secondary), var(--primary));
-            border-radius: 12px 12px 0 0;
-        }
-        
-        .stat-item {
-            text-align: center;
-            flex: 1;
-        }
-        
-        .stat-value {
-            font-size: 26px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            font-family: 'Orbitron', sans-serif;
         }
         
         .progress-bar {
-            width: 100%;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.1);
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ffcc00, #ff9900);
             border-radius: 6px;
-            margin-top: 15px;
+            animation: progress 5s linear infinite;
+            position: relative;
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            animation: shimmer 2s infinite;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 14px 35px;
+            background: linear-gradient(45deg, #ffcc00, #ff9900);
+            color: #1a2a6c;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 204, 0, 0.4);
+            position: relative;
             overflow: hidden;
         }
         
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 6px;
+        .btn:hover {
+            background: linear-gradient(45deg, #ffd633, #ffaa33);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 204, 0, 0.6);
         }
         
-        .back-btn {
+        .btn:active {
+            transform: translateY(-2px);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 20%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(30deg);
+            transition: all 0.5s;
+        }
+        
+        .btn:hover::after {
+            left: 120%;
+        }
+        
+        .time-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .time-box {
             background: rgba(255, 255, 255, 0.1);
-            margin-top: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 14px 25px;
+            padding: 15px;
             border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            min-width: 80px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+        }
+        
+        .time-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        
+        .time-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .floating-elements {
+            position: absolute;
             width: 100%;
-            text-align: center;
-            text-decoration: none;
-            display: block;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
         }
         
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-3px);
+        .floating-element {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.7;
+            animation: floatAround 20s infinite linear;
         }
         
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .floating-element:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 25s;
         }
         
-        @keyframes fadeInUp {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Responsive */
-        @media (min-width: 1024px) {
-            .sidebar {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 270px;
-            }
-            .menu-toggle {
-                display: none;
-            }
+        .floating-element:nth-child(2) {
+            top: 20%;
+            right: 10%;
+            animation-delay: 2s;
+            animation-duration: 30s;
         }
         
-        @media (max-width: 1023px) {
-            .main-content {
-                margin-left: 0;
-                padding: 15px 20px 35px;
-            }
-            .main-app-title {
-                font-size: 24px;
-            }
-            .container {
-                padding: 20px;
-            }
+        .floating-element:nth-child(3) {
+            bottom: 15%;
+            left: 15%;
+            animation-delay: 4s;
+            animation-duration: 20s;
         }
-
-        @media (max-width: 480px) {
-            .stats {
-                flex-direction: column;
-                gap: 15px;
+        
+        .floating-element:nth-child(4) {
+            bottom: 25%;
+            right: 15%;
+            animation-delay: 6s;
+            animation-duration: 35s;
+        }
+        
+        .notification {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); }
+            100% { transform: scale(1); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+        }
+        
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 10px rgba(255, 204, 0, 0.5); }
+            100% { text-shadow: 0 0 20px rgba(255, 204, 0, 0.8), 0 0 30px rgba(255, 204, 0, 0.6); }
+        }
+        
+        @keyframes floatAround {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(100px, 50px) rotate(90deg); }
+            50% { transform: translate(50px, 100px) rotate(180deg); }
+            75% { transform: translate(-50px, 50px) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(30deg) translateX(-100%); }
+            100% { transform: rotate(30deg) translateX(200%); }
+        }
+        
+        @keyframes slideIn {
+            0% { transform: translateX(100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .maintenance-container {
+                padding: 30px 20px;
             }
-            .stat-item {
-                text-align: left;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
+            
+            h1 {
+                font-size: 32px;
+            }
+            
+            p {
+                font-size: 16px;
+            }
+            
+            .time-container {
+                flex-wrap: wrap;
+            }
+            
+            .time-box {
+                min-width: 70px;
+            }
+            
+            .time-value {
+                font-size: 28px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Menu Toggle Button -->
-    <div class="menu-toggle" id="menuToggle">
-        <i class="fas fa-bars"></i>
+    <div class="floating-elements">
+        <div class="floating-element">🔧</div>
+        <div class="floating-element">⚙️</div>
+        <div class="floating-element">🛠️</div>
+        <div class="floating-element">🔩</div>
     </div>
-
-    <!-- Sidebar Overlay -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="logo-container">
-                <div class="logo-ring"></div>
-                <div class="logo" id="sidebarLogo"></div>
-            </div>
-            <div class="app-title">X-Moon Light</div>
-            <div class="access-info"><b><i>NGL Tools</i></b></div>
+    
+    <div class="notification">
+        <i class="fas fa-sync-alt"></i> Maintenance in Progress
+    </div>
+    
+    <div class="maintenance-container">
+        <div class="icon-container">
+            <div class="icon">🚧</div>
+            <div class="gear gear-1">⚙️</div>
+            <div class="gear gear-2">⚙️</div>
         </div>
         
-        <ul class="nav-menu">
-            <li class="nav-item"><a href="index.html" class="nav-link"><i class="fas fa-robot"></i>Ai X-Moon</a></li>
-            <li class="nav-item"><a href="qr-generator.html" class="nav-link"><i class="fas fa-qrcode"></i>QR Generator</a></li>
-            <li class="nav-item"><a href="tiktok.html" class="nav-link"><i class="fab fa-tiktok"></i>TikTok Downloader</a></li>
-            <li class="nav-item"><a href="spam-ngl.html" class="nav-link active"><i class="fas fa-message"></i>Spam NGL</a></li>
-        </ul>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Header -->
-        <div class="header">
-            <div class="main-logo-container">
-                <div class="main-logo-ring"></div>
-                <img src="https://i.top4top.io/p_3590b6bk90.jpg" class="main-logo" alt="X-Moon Logo">
+        <h1>Server Sedang Dalam Pemeliharaan</h1>
+        <p>Kami sedang melakukan pemeliharaan server untuk meningkatkan pengalaman Anda. Layanan akan segera kembali normal. Terima kasih atas pengertiannya.</p>
+        
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        
+        <div class="time-container">
+            <div class="time-box">
+                <div class="time-value" id="hours">00</div>
+                <div class="time-label">Hours</div>
             </div>
-            <div>
-                <div class="main-app-title">X-Moon Light</div>
-                <div class="main-access-info"><b>NGL SPAM Tools</b></div>
+            <div class="time-box">
+                <div class="time-value" id="minutes">00</div>
+                <div class="time-label">Minutes</div>
+            </div>
+            <div class="time-box">
+                <div class="time-value" id="seconds">00</div>
+                <div class="time-label">Seconds</div>
             </div>
         </div>
-
-        <div class="container">
-            <div class="header-section">
-                <h2><i class="fas fa-message"></i> NGL Spam Tool</h2>
-                <p>Tool untuk mengirim pesan ke NGL.link</p>
-            </div>
-            
-            <form id="nglForm">
-                <div class="form-group">
-                    <label><i class="fas fa-user"></i> Username Target NGL:</label>
-                    <input type="text" id="target" placeholder="contoh: username123 (tanpa @)" required>
-                </div>
-                
-                <div class="form-group">
-                    <label><i class="fas fa-message"></i> Pesan:</label>
-                    <textarea id="message" rows="3" placeholder="Masukkan pesan yang ingin dikirim..." required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label><i class="fas fa-chart-bar"></i> Jumlah Pesan:</label>
-                    <input type="number" id="count" value="10" min="1" max="100" required>
-                    <small style="color: #888;">Maksimal 100 pesan per request</small>
-                </div>
-                
-                <button type="submit" id="submitBtn" class="action-btn">
-                    <i class="fas fa-rocket"></i> Mulai Spam
-                </button>
-            </form>
-            
-            <div class="stats" id="stats" style="display: none;">
-                <div class="stat-item">
-                    <div class="stat-value" id="successCount">0</div>
-                    <div style="color: #00ff00;">Sukses</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="errorCount">0</div>
-                    <div style="color: #ff4444;">Gagal</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="progress">0%</div>
-                    <div style="color: #ffffff;">Progress</div>
-                </div>
-            </div>
-            
-            <div class="progress-bar" id="progressBar" style="display: none;">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            
-            <div class="logs" id="logs">
-                <div class="log-info">⏳ Menunggu perintah...</div>
-            </div>
-            
-            <a href="index.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i> Kembali ke menu utama
-            </a>
-        </div>
+        
+        <a href="index.html" class="btn">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
     </div>
 
     <script>
-    // Menu toggle functionality
-    const menuToggle = document.getElementById('menuToggle');
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-    
-    function toggleSidebar() {
-        sidebar.classList.toggle('active');
-        sidebarOverlay.classList.toggle('active');
-    }
-    
-    menuToggle.addEventListener('click', toggleSidebar);
-    sidebarOverlay.addEventListener('click', toggleSidebar);
-
-    // Check if logo image loads successfully
-    function checkLogo() {
-        const logos = [
-            document.getElementById('sidebarLogo'),
-            document.getElementById('mainLogo')
-        ];
+        // Update waktu real-time
+        function updateTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+        }
         
-        logos.forEach(logo => {
-            if (!logo) return;
-            
-            const img = new Image();
-            img.src = 'https://i.top4top.io/p_3590b6bk90.jpg';
-            
-            img.onload = function() {
-                logo.style.backgroundImage = `url('${img.src}')`;
-            };
-            
-            img.onerror = function() {
-                logo.classList.add('failed');
-            };
+        // Update waktu setiap detik
+        setInterval(updateTime, 1000);
+        updateTime(); // Panggil sekali saat halaman dimuat
+        
+        // Efek tambahan untuk tombol
+        document.querySelector('.btn').addEventListener('mouseenter', function() {
+            this.innerHTML = '<i class="fas fa-rocket"></i> Back to Dashboard';
         });
-    }
-
-    document.getElementById('nglForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
         
-        const target = document.getElementById('target').value.trim();
-        const message = document.getElementById('message').value.trim();
-        const count = parseInt(document.getElementById('count').value);
+        document.querySelector('.btn').addEventListener('mouseleave', function() {
+            this.innerHTML = '<i class="fas fa-arrow-left"></i> Back to Dashboard';
+        });
         
-        const submitBtn = document.getElementById('submitBtn');
-        const logs = document.getElementById('logs');
-        const stats = document.getElementById('stats');
-        const progressBar = document.getElementById('progressBar');
-        const progressFill = document.getElementById('progressFill');
+        // Efek ketik untuk judul
+        const title = document.querySelector('h1');
+        const originalText = title.textContent;
+        title.textContent = '';
         
-        // Validasi
-        if (!target || !message) {
-            logs.innerHTML = '<div class="log-error">❌ Semua field harus diisi!</div>';
-            return;
-        }
-        
-        if (count < 1 || count > 100) {
-            logs.innerHTML = '<div class="log-error">❌ Jumlah pesan harus antara 1-100!</div>';
-            return;
-        }
-        
-        // Reset UI
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-        submitBtn.disabled = true;
-        logs.innerHTML = '<div class="log-info">🚀 Memulai spam NGL...</div>';
-        stats.style.display = 'flex';
-        progressBar.style.display = 'block';
-        progressFill.style.width = '0%';
-        document.getElementById('successCount').textContent = '0';
-        document.getElementById('errorCount').textContent = '0';
-        document.getElementById('progress').textContent = '0%';
-        
-        try {
-            // Simulasi proses spam (ganti dengan API call yang sesungguhnya)
-            let success = 0;
-            let errors = 0;
-            
-            for (let i = 1; i <= count; i++) {
-                // Simulasi delay
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                // Simulasi success rate 80%
-                const isSuccess = Math.random() > 0.2;
-                
-                if (isSuccess) {
-                    success++;
-                    const logElement = document.createElement('div');
-                    logElement.className = 'log-success';
-                    logElement.textContent = `✅ [${i}/${count}] Pesan berhasil dikirim ke ${target}`;
-                    logs.appendChild(logElement);
-                } else {
-                    errors++;
-                    const logElement = document.createElement('div');
-                    logElement.className = 'log-error';
-                    logElement.textContent = `❌ [${i}/${count}] Gagal mengirim pesan ke ${target}`;
-                    logs.appendChild(logElement);
-                }
-                
-                // Update progress
-                const progress = (i / count) * 100;
-                progressFill.style.width = `${progress}%`;
-                document.getElementById('successCount').textContent = success;
-                document.getElementById('errorCount').textContent = errors;
-                document.getElementById('progress').textContent = `${Math.round(progress)}%`;
-                
-                // Scroll ke bottom logs
-                logs.scrollTop = logs.scrollHeight;
+        let i = 0;
+        const typeWriter = () => {
+            if (i < originalText.length) {
+                title.textContent += originalText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
             }
-            
-            // Tampilkan hasil akhir
-            const finalLog = document.createElement('div');
-            finalLog.className = 'log-info';
-            finalLog.textContent = `🎉 Selesai! ${success} sukses, ${errors} gagal dari ${count} pesan`;
-            logs.appendChild(finalLog);
-            
-        } catch (error) {
-            const errorElement = document.createElement('div');
-            errorElement.className = 'log-error';
-            errorElement.textContent = '❌ Error: ' + error.message;
-            logs.appendChild(errorElement);
-        } finally {
-            submitBtn.innerHTML = '<i class="fas fa-rocket"></i> Mulai Spam';
-            submitBtn.disabled = false;
-        }
-    });
-    
-    // Initialize when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        checkLogo();
+        };
         
-        // Close sidebar when clicking on a link (for mobile)
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function() {
-                if (window.innerWidth < 1024) {
-                    toggleSidebar();
-                }
-            });
+        // Mulai efek ketik setelah halaman dimuat
+        window.addEventListener('load', () => {
+            setTimeout(typeWriter, 500);
         });
-    });
     </script>
 </body>
 </html>
