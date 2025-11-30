@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI X-Moon - X-Moon Light</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@32,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@32,400,0,0" /
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -23,18 +23,6 @@
             --secondary-color: #1a1a2e;
             --secondary-hover-color: #252541;
             --scrollbar-color: #555555;
-            --accent-color: #8B5CF6;
-            --accent-secondary: #EC4899;
-        }
-
-        body.light-theme {
-            --text-color: #000000;
-            --subheading-color: #666666;
-            --placeholder-color: #888888;
-            --primary-color: #f8f8ff;
-            --secondary-color: #f0f0f5;
-            --secondary-hover-color: #e0e0eb;
-            --scrollbar-color: #c0c0c0;
             --accent-color: #8B5CF6;
             --accent-secondary: #EC4899;
         }
@@ -651,7 +639,8 @@
             <li class="nav-item"><a href="index.html" class="nav-link active"><i class="fas fa-robot"></i>Ai X-Moon</a></li>
             <li class="nav-item"><a href="qr-generator.html" class="nav-link"><i class="fas fa-qrcode"></i>QR Generator</a></li>
             <li class="nav-item"><a href="tiktok.html" class="nav-link"><i class="fab fa-tiktok"></i>TikTok Downloader</a></li>
-            <li class="nav-item"><a href="spam-ngl.html" class="nav-link"><i class="fas fa-message"></i>Spam NGL</a></li>
+            <li class="nav-item"><a href="spam-tele.html" class="nav-link"><i class="fab fa-telegram"></i>Telegram Spam</a></li>
+            <li class="nav-item"><a href="tracker.html" class="nav-link"><i class="fas fa-map-marker-alt"></i>IP Tracker</a></li>
         </ul>
     </div>
 
@@ -691,7 +680,7 @@
         <div class="info-section">
             <div class="info-content">
                 <h3>𝘾𝙖𝙧𝙖 𝙈𝙚𝙣𝙜𝙜𝙪𝙣𝙖𝙠𝙖𝙣 𝘼𝙄 𝘼𝙨𝙨𝙞𝙨𝙩𝙖𝙣𝙩</h3>
-                <p>AI Assistant ini menggunakan Google Gemini API untuk memberikan respons yang cerdas dan akurat.</p>
+                <p>AI Assistant ini menggunakan DeepSeek AI untuk memberikan respons yang cerdas dan akurat.</p>
                 
                 <ul>
                     <li><span class="highlight">Tanyakan apapun</span>: Dapat membantu dengan berbagai topik dan pertanyaan</li>
@@ -701,7 +690,7 @@
                 </ul>
                 
                 <div class="note-box">
-                    <p><i class="fas fa-lightbulb"></i> <strong>Tips:</strong> Gunakan pertanyaan yang jelas dan spesifik untuk mendapatkan jawaban terbaik. AI akan memberikan respons dalam format yang mudah dipahami.</p>
+                    <p><i class="fas fa-lightbulb"></i> <strong>Tips:</strong> Gunakan pertanyaan yang jelas dan spesifik untuk mendapatkan jawaban terbaik.</p>
                 </div>
             </div>
         </div>
@@ -712,9 +701,10 @@
     </div>
 
     <script>
-        // API Configuration
-        const API_KEY = "AIzaSyACvOmvxlP1H5fjZkCQ7fkrrhlBHRt_PDg"; // Ganti dengan API key Anda
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+        // API Configuration - OpenRouter dengan DeepSeek
+        const api_key = "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";
+        const base_url = "https://openrouter.ai/api/v1";
+        const model = "deepseek/deepseek-v3.1-terminus";
 
         // Menu toggle functionality
         const menuToggle = document.getElementById('menuToggle');
@@ -803,41 +793,64 @@
             showTypingIndicator();
 
             try {
-                // Add to chat history
-                chatHistory.push({
-                    role: "user",
-                    parts: [{ text: message }]
-                });
+                // Prepare messages for API
+                const messages = [
+                    ...chatHistory.map(msg => ({
+                        role: msg.role,
+                        content: msg.content
+                    })),
+                    {
+                        role: "user",
+                        content: message
+                    }
+                ];
 
-                // Send to Gemini API
-                const response = await fetch(API_URL, {
+                // Send to OpenRouter API
+                const response = await fetch(`${base_url}/chat/completions`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: chatHistory })
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${api_key}`,
+                        "HTTP-Referer": window.location.origin,
+                        "X-Title": "X-Moon Light AI"
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: messages,
+                        max_tokens: 4000,
+                        temperature: 0.7,
+                        stream: false
+                    })
                 });
 
                 const data = await response.json();
                 
-                if (!response.ok) throw new Error(data.error?.message || 'API Error');
+                if (!response.ok) {
+                    throw new Error(data.error?.message || 'API Error');
+                }
 
                 hideTypingIndicator();
 
                 // Get AI response
-                const responseText = data.candidates[0].content.parts[0].text;
+                const responseText = data.choices[0].message.content;
                 addMessage(responseText, false);
                 
                 // Add to history
-                chatHistory.push({
-                    role: "model", 
-                    parts: [{ text: responseText }]
-                });
+                chatHistory.push(
+                    { role: "user", content: message },
+                    { role: "assistant", content: responseText }
+                );
 
-                // Save history
+                // Save history (keep only last 20 messages)
+                if (chatHistory.length > 20) {
+                    chatHistory = chatHistory.slice(-20);
+                }
                 saveChatHistory(chatHistory);
 
             } catch (error) {
                 hideTypingIndicator();
                 addMessage(`Maaf, terjadi error: ${error.message}`, false);
+                console.error('Chat error:', error);
             }
         }
 
@@ -854,16 +867,14 @@
         window.onload = function() {
             promptInput.focus();
             
-            // Load and display chat history (skip first welcome message)
+            // Load and display chat history
             if (chatHistory.length > 0) {
                 chatsWrapper.innerHTML = '';
                 chatHistory.forEach(item => {
                     if (item.role === 'user') {
-                        const text = item.parts[0].text;
-                        addMessage(text, true);
-                    } else if (item.role === 'model') {
-                        const text = item.parts[0].text;
-                        addMessage(text, false);
+                        addMessage(item.content, true);
+                    } else if (item.role === 'assistant') {
+                        addMessage(item.content, false);
                     }
                 });
             }
